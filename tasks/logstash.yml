@@ -1,0 +1,14 @@
+---
+- name: Install Logstash.
+  apt:
+    name: logstash
+    state: latest
+  notify:
+    - reload systemd
+    - restart logstash
+
+- name: Start logstash service.
+  service:
+    name: logstash
+    state: started
+    enabled: yes
