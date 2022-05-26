@@ -1,0 +1,34 @@
+---
+- name: Install Kibana.
+  apt:
+    name: kibana
+    state: latest
+  notify:
+    - reload systemd
+    - restart kibana
+
+- name: Create logfile for Kibana.
+  copy:
+    dest: "{{ elk_kibana_logfile }}"
+    owner: root
+    group: "{{ elk_kibana_user }}"
+    mode: "0660"
+    force: no
+    content: ""
+  when: elk_kibana_logfile.startswith('/')
+  notify: restart kibana
+
+- name: Set permissions on logfile for Kibana.
+  file:
+    path: "{{ elk_kibana_logfile }}"
+    owner: root
+    group: "{{ elk_kibana_user }}"
+    mode: "0660"
+  when: elk_kibana_logfile.startswith('/')
+  notify: restart kibana
+
+- name: Start kibana service.
+  service:
+    name: kibana
+    state: started
+    enabled: yes
