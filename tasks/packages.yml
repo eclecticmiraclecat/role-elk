@@ -1,0 +1,17 @@
+---
+- name: Install Java.
+  apt:
+    name: openjdk-17-jre-headless
+    state: present
+
+- name: Add Elastic repositories apt key.
+  apt_key:
+    url: https://packages.elastic.co/GPG-KEY-elasticsearch
+    state: present
+
+- name: Add ELK apt repo.
+  apt_repository:
+    repo: "deb https://artifacts.elastic.co/packages/8.x/apt stable main"
+    state: present
+  notify:
+    - reload systemd
