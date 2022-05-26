@@ -1,0 +1,40 @@
+- name: Install nginx
+  apt:
+    name: nginx
+    state: present
+
+- name: Write Kibana Nginx config.
+  template:
+    src: kibana-nginx.conf.j2
+    dest: /etc/nginx/conf.d/kibana.conf
+    owner: root
+    group: root
+    mode: "0644"
+  notify: restart nginx
+
+- name: Install passlib for writing htpasswd file.
+  apt:
+    name: python3-passlib
+    state: present
+
+- name: Create htpasswd file to restrict access to Kibana web interface.
+  htpasswd:
+    name: "{{ elk_kibana_username }}"
+    password: "{{ elk_kibana_password }}"
+    path: /etc/nginx/conf.d/kibana.htpasswd
+    owner: root
+    group: www-data
+    mode: "0640"
+  notify: restart nginx
+
+- name: Disable default Nginx site.
+  file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+  notify: restart nginx
+
+- name: Start nginx service.
+  service:
+    name: nginx
+    state: started
+    enabled: yes
