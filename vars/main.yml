@@ -1,2 +1,13 @@
 ---
 # vars file for role-elk
+elk_kibana_user: "kibana"
+elk_kibana_logfile: "/var/log/kibana.log"
+
+elk_cluster_name: elk-logging
+
+elk_nginx_server_name: localhost
+
+elk_kibana_username: kibana
+elk_kibana_password: kibana
+
+elk_configure_firewall: false
